@@ -1,0 +1,96 @@
+Note: I was asked to set up this server with Digital Ocean.
+I did not see an option to deploy RHEL, so I am running CentOS 7.
+
+Credentials -
+SSH
+165.227.194.203
+jason
+Scout241!
+DB
+jason
+Scout241
+
+Create User -
+adduser jason
+passwd jason (Password is Scout241!)
+
+Add user to wheel group:
+gpasswd -a jason wheel
+
+Normally I would set up an SSH key and disable SSH login for the root user
+
+Insatall NGINX -
+ yum install epel-release
+ yum install nginx
+ systemctl start nginx
+Screen shot of NGINX running at my test domain scout-test.com -> https://snag.gy/uBpOmy.jpg
+ systemctl enable nginx
+
+Install MySQL MariaDB -
+ yum install mariadb-server mariadb
+ systemctl start mariadb
+mysql_secure_installation
+ systemctl enable mariadb
+
+Install PHP -
+yum install php php-mysql php-fpm
+vi /etc/php.ini
+    cgi.fix_pathinfo=0
+vi /etc/php-fpm.d/www.conf
+    listen = /var/run/php-fpm/php-fpm.sock
+    Uncomment listen.owner = nobody
+    Uncomment listen.group = nobody
+    user = nginx
+    group = nginx
+systemctl start php-fpm
+
+Configure NGINX -
+vi /usr/share/nginx/html/info.php
+server {
+    listen       80;
+    server_name  scout-test.com;
+
+    root   /usr/share/nginx/html;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    error_page 404 /404.html;
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+
+systemctl restart nginx
+vi /usr/share/nginx/html/info.php
+    <?php phpinfo(); ?>
+
+http://scout-test.com/info.php
+
+Create DB & user -
+mysql -u root -p
+CREATE DATABASE mage_test;
+CREATE USER 'jason'@'localhost' IDENTIFIED BY 'Scout241';
+GRANT ALL PRIVILEGES ON * . * TO 'jason'@'localhost';
+FLUSH PRIVILEGES;
+
+Install Magento Required Extensions -
+yum install php-xml
+yum install php-gd
+yum install epel-release-7-1.noarch.rpm
+yum install php-mcrypt*
+
+Running into an issue here with http://scout-test.com/index.php/install/ returning a 404
+after the download process. It looks like I need to configure NGINX to understand .htaccess
+I ran out of time. I will get an M1 instance up and running to finish the remaining tasks
+in this assignment and submit ASAP.
