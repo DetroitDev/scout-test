@@ -1,0 +1,106 @@
+I spent some more time working on the nginx.conf and my custom configurations in the conf.d directory
+but I am still having trouble getting it exactly right. I feel like I'm pretty close but just need
+some more time or someone to get me pointed in the right direction since this is my first time
+trying to set up nginx.
+
+Anyhow in an effort to demonstrate that I am not totally inept I have set up another server running
+a LAMP stack. I actually purchase a VPS to set this up on but they're telling me 24-48 hours before
+it's provisioned. So I'm reluctantly running this on one of my dev servers at work.
+
+http://dev-jason.ososleep.com/
+
+Magento Deployment -
+
+    I ran the Magento installer with default configurations
+
+    System > Configuration > Sales > Payment Methods
+            Enable COD
+            Disable Saved CC
+            Disable Check/Money Order
+
+    Enabled Form Key Validation to clear initial system warning
+    Re-index Magento to clear initial system warning
+    Clear all caches
+
+AOE Sheduler Module Installation -
+
+    I installed the https://github.com/AOEpeople/Aoe_Scheduler module via FTP (NOTE: I see in the
+    documentation that they are talking about doing this with Composer. I have plenty of experience
+    using composer with M2 but not M1. I will certainly be reading up on this)
+
+    Compilation is already disabled in the admin
+
+    Flushed all Caches
+
+    Log out/log back in
+
+    Check System > Advanced > Disable Modules Output to confirm the module has been successfully installed
+    and is enabled
+
+    I did not find any clear direction on configurations for this module in the documentation (see
+    following link). A lot of the documentation looks to be a work in progress. I did however confirm that a lot of new options
+    have been added under System > Configuration > Advanced > System > Cron (Scheduled Tasks)
+    https://github.com/AOEpeople/Aoe_Scheduler/blob/master/doc/cron-configuration.md is pretty vague
+    with just a brief link to the dev-docs on generic crontab creation.
+
+Create Test Category -
+
+    Under Catalog > Manage Categories I created a new sub category of the default category called
+    Shirts.
+
+    General Information Tab -
+        Set Is Active to Yes, entered Lorem Ipsum for the description, uploaded a sample image,
+        entered a page title and set Include In Navigation Menu to Yes.
+
+    Display Settings Tab -
+        I left Display Mode set to Products only so not using any static blocks here.
+        Set Is Anchor to Yes
+        All other options are using the default configuration settings
+
+    No changes to Custom Design and Category Products tabs -
+
+Create Test Product -
+
+    Under Catalog > Manage Products I created a new product called Dummy T Shirt
+
+    General Tab -
+        Added Lorem Ipsum to Description and Short Description
+        Set SKU to DUMMY
+        Set Weight to 1
+        Set Status to Enabled
+        Set Visibility to Catalog Search
+
+    Prices Tab -
+        Set the price to $50
+        Set Tax Class to Taxable Goods
+
+    Images Tab -
+        Uploaded a sample image and set to Base Image, Small Image and Thumbnail
+
+    Inventory Tab -
+        Set QTY to 9999
+        Set Stock Availability to In Stock
+
+    Categories Tab -
+        Selected newly created Shirts category that was configured in the last step
+
+Create Test Order -
+
+    Add to Cart from:
+        http://dev-jason.ososleep.com/shirts.html
+        or
+        http://dev-jason.ososleep.com/shirts/dummy-t-shirt.html
+    Proceed to checkout
+    Checkout as guest
+    Fill out Billing/Shipping details
+    Select default Fixed Flat Rate Shipping (currently only method enabled)
+    Select Cash on Delivery (currently only method enabled)
+    Review and place order
+
+Cancel Order -
+
+    Sales > Orders > Select Order
+    Click orange Cancel button in upper left hand corner
+
+Please let me know if you require anything else. Magento admin credentials, FTP, SSH, DB etc.
+
