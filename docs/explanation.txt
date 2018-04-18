@@ -7,7 +7,7 @@ Anyhow in an effort to demonstrate that I am not totally inept I have set up ano
 a LAMP stack. I actually purchase a VPS to set this up on but they're telling me 24-48 hours before
 it's provisioned. So I'm reluctantly running this on one of my dev servers at work.
 
-http://dev-jason.ososleep.com/
+Server URL http://dev-jason.ososleep.com/
 
 Magento Deployment -
 
